@@ -15,15 +15,16 @@ def chatbot(request):
 
     try:
         response = requests.post(
-            API_URL,
-            headers=HEADERS,
-            json={
-    "model": "openai/gpt-3.5-turbo",
-    "messages": messages,
-    "max_tokens": 100
-}
-            timeout=40
-        )
+    API_URL,
+    headers=HEADERS,
+    json={
+        "model": "openai/gpt-3.5-turbo",
+        "messages": messages,
+        "max_tokens": 100
+    },
+    timeout=30
+)
+       
 
         data = response.json()
         print("FULL RESPONSE:", data)
