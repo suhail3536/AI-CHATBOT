@@ -5,10 +5,7 @@ from rest_framework.response import Response
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 import os 
 HEADERS = {
-    import os
-
-HEADERS = {
-    "Authorization": f"Bearer {os.getenv('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')}"
+    "Authorization": "Bearer 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",
     "Content-Type": "application/json"
 }
 
@@ -21,10 +18,10 @@ def chatbot(request):
             API_URL,
             headers=HEADERS,
             json={
-                "model": "meta-llama/llama-3-8b-instruct",
-                "messages": messages,
-                "max_tokens": 100
-            },
+    "model": "openai/gpt-3.5-turbo",
+    "messages": messages,
+    "max_tokens": 100
+}
             timeout=15
         )
 
