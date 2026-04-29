@@ -7,8 +7,9 @@ function App() {
   const [chat, setChat] = useState([]);
 
   const chatEndRef = useRef(null);
+  const API_URL = "https://ai-chatbot-zf73.onrender.com/api/chat/";
 
-  
+
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat]);
@@ -20,7 +21,7 @@ function App() {
     window.speechSynthesis.speak(speech);
   };
 
-  
+
   const startListening = () => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -36,68 +37,80 @@ function App() {
   };
 
   const sendVoiceMessage = async (voiceText) => {
-  const formattedMessages = [
-    ...chat.map((c) => ({
-      role: c.role === "user" ? "user" : "assistant",
-      content: c.text,
-    })),
-    { role: "user", content: voiceText },
-  ];
+    const formattedMessages = [
+      ...chat.map((c) => ({
+        role: c.role === "user" ? "user" : "assistant",
+        content: c.text,
+      })),
+      { role: "user", content: voiceText },
+    ];
 
-  setChat((prev) => [...prev, { role: "user", text: voiceText }]);
+    setChat((prev) => [...prev, { role: "user", text: voiceText }]);
 
-  try {
-    const res = await axios.post(
-      "https://your-backend.onrender.com/api/chat/",
-      { messages: formattedMessages }
-    );
+    try {
+      const res = await axios.post(API_URL, {
+        messages: formattedMessages,
+      }, {
+        headers: {
+          "Content-Type": "application/json"
+        },
+        timeout:20000
+      });
+      const reply = res.data.reply;
 
-    const reply = res.data.reply;
+      setChat((prev) => [...prev, { role: "bot", text: reply }]);
 
-    setChat((prev) => [...prev, { role: "bot", text: reply }]);
+    } catch {
+      setChat((prev) => [
+        ...prev,
+        { role: "bot", text: "Error" },
+      ]);
+    }
+  };
 
-  } catch {
-    setChat((prev) => [
-      ...prev,
-      { role: "bot", text: "Error" },
-    ]);
-  }
-};
+  const sendMessage = async () => {
+    if (!message.trim()) return;
 
- const sendMessage = async () => {
-  if (!message.trim()) return;
+    const userMsg = message;
 
-  const userMsg = message;
 
-  
-  const formattedMessages = [
-    ...chat.map((c) => ({
-      role: c.role === "user" ? "user" : "assistant",
-      content: c.text,
-    })),
-    { role: "user", content: userMsg },
-  ];
+    const formattedMessages = [
+      ...chat.map((c) => ({
+        role: c.role === "user" ? "user" : "assistant",
+        content: c.text,
+      })),
+      { role: "user", content: userMsg },
+    ];
 
-  setChat((prev) => [...prev, { role: "user", text: userMsg }]);
-  setMessage("");
+    setChat((prev) => [...prev, { role: "user", text: userMsg }]);
+    setMessage("");
 
-  try {
-    const res = await axios.post(
-      "https://your-backend.onrender.com/api/chat/",
-      { messages: formattedMessages }
-    );
+    try {
+      const res = await axios.post(API_URL, {
+        messages: formattedMessages,
+      }, {
+        headers: {
+          "Content-Type": "application/json"
+        },
+          timeout: 20000
+      });
+      const reply = res.data.reply;
 
-    const reply = res.data.reply;
+      setChat((prev) => [...prev, { role: "bot", text: reply }]);
 
-    setChat((prev) => [...prev, { role: "bot", text: reply }]);
+    }
+    catch (err) {
+      console.error("ERROR:", err.response?.data || err.message);
 
-  } catch {
-    setChat((prev) => [
-      ...prev,
-      { role: "bot", text: "Error connecting backend" },
-    ]);
-  }
-};
+      setChat((prev) => [
+        ...prev,
+        {
+          role: "bot",
+          text: "Backend error aa raha hai (console check karo)",
+        },
+      ]);
+    }
+  };
   return (
     <div className="container">
       <h1>🤖 AI Chatbot 🤖</h1>

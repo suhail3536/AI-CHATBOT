@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
-
+import os 
 HEADERS = {
     "Authorization": "Bearer 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",
     "Content-Type": "application/json"
