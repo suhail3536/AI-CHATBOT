@@ -22,7 +22,7 @@ def chatbot(request):
     "messages": messages,
     "max_tokens": 100
 }
-            timeout=15
+            timeout=40
         )
 
         data = response.json()
