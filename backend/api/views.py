@@ -5,7 +5,10 @@ from rest_framework.response import Response
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 import os 
 HEADERS = {
-    "Authorization": "Bearer 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",
+    import os
+
+HEADERS = {
+    "Authorization": f"Bearer {os.getenv('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')}"
     "Content-Type": "application/json"
 }
 
